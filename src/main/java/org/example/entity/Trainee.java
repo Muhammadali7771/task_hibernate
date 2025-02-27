@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,6 +18,11 @@ public class Trainee {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
     private String address;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private User user;
+    @ManyToMany
+    @JoinTable(name = "trainee_trainer",
+            joinColumns = @JoinColumn(name = "trainee_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id"))
+    private List<Trainer> trainers;
 }
