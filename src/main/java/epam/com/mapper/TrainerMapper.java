@@ -1,10 +1,9 @@
-package org.example.mapper;
+package epam.com.mapper;
 
-import org.example.dtos.TraineeCreateDto;
-import org.example.dtos.TrainerCreateDto;
-import org.example.dtos.UserCreateDto;
-import org.example.entity.Trainer;
-import org.example.entity.User;
+import epam.com.dtos.TrainerCreateDto;
+import epam.com.dtos.UserCreateDto;
+import epam.com.entity.Trainer;
+import epam.com.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component

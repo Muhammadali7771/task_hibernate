@@ -1,11 +1,11 @@
-package org.example.repository;
+package epam.com.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import org.example.entity.Trainee;
-import org.example.entity.User;
+import epam.com.entity.Trainee;
+import epam.com.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package org.example.dtos;
+package epam.com.dtos;
 
 public record UserCreateDto(String firstName,
                             String lastName) {
