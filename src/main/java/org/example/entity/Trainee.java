@@ -25,4 +25,6 @@ public class Trainee {
             joinColumns = @JoinColumn(name = "trainee_id"),
             inverseJoinColumns = @JoinColumn(name = "trainer_id"))
     private List<Trainer> trainers;
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Training> trainings;
 }
