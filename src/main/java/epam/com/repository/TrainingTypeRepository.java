@@ -1,7 +1,7 @@
-package org.example.repository;
+package epam.com.repository;
 
 import jakarta.persistence.EntityManager;
-import org.example.entity.TrainingType;
+import epam.com.entity.TrainingType;
 import org.springframework.stereotype.Repository;
 
 @Repository

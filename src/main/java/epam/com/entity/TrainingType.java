@@ -1,4 +1,4 @@
-package org.example.entity;
+package epam.com.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

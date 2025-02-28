@@ -1,4 +1,4 @@
-package org.example.config;
+package epam.com.config;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

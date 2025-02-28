@@ -1,6 +1,6 @@
-package org.example.dtos;
+package epam.com.dtos;
 
-import org.example.entity.TrainingType;
+import epam.com.entity.TrainingType;
 
 public record TrainerCreateDto(UserCreateDto userCreateDto,
                                TrainingType specialization) {

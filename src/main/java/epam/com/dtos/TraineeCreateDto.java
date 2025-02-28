@@ -1,4 +1,4 @@
-package org.example.dtos;
+package epam.com.dtos;
 
 import java.util.Date;
 

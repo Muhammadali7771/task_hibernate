@@ -1,8 +1,8 @@
-package org.example.dtos;
+package epam.com.dtos;
 
-import org.example.entity.Trainee;
-import org.example.entity.Trainer;
-import org.example.entity.TrainingType;
+import epam.com.entity.Trainee;
+import epam.com.entity.Trainer;
+import epam.com.entity.TrainingType;
 
 import java.util.Date;
 
