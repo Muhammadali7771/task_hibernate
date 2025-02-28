@@ -29,7 +29,7 @@ public class UsernamePasswordGenerator {
     public String generatePassword(){
         Random random = new Random();
         StringBuilder password = new StringBuilder();
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 10; i++){
             int a = random.nextInt(33, 127);
             password.append((char) a);
         }
