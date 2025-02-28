@@ -23,6 +23,8 @@ public class TraineeRepository {
     public boolean checkUsernameAndPasswordMatch(String username, String password) {
         Query query = entityManager.createQuery("select count(t) > 0 from Trainer t left join User u " +
                 " where t.user.id = u.id and u.userName = :username and u.password = :password");
+        query.setParameter("username", username);
+        query.setParameter("password", password);
         boolean isMatch = (boolean) query.getSingleResult();
         return isMatch;
     }
