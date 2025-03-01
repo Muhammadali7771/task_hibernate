@@ -1,5 +1,6 @@
 package epam.com.repository;
 
+import epam.com.entity.Trainer;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -8,6 +9,7 @@ import epam.com.entity.Trainee;
 import epam.com.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,10 +48,15 @@ public class TraineeRepository {
         }
     }
 
-    public void changePassword(User user, String password) {
+    public void changePassword(Integer traineeId, String password) {
         entityManager.getTransaction().begin();
-        user.setPassword(password);
-        entityManager.merge(user);
+        Query query = entityManager.createQuery("""
+                update User u set u.password = :password 
+                where u.id in (select t.user.id from Trainee t where t.id = :traineeId)
+                """);
+        query.setParameter("password", password);
+        query.setParameter("traineeId", traineeId);
+        query.executeUpdate();
         entityManager.getTransaction().commit();
     }
 
@@ -82,5 +89,22 @@ public class TraineeRepository {
                 " where t.user.id in (select u.id from User u where u.userName = :username)");
         query.setParameter("username", username);
         query.executeUpdate();
+    }
+    @Transactional
+    public void assignTrainerForTrainee(Integer traineeId, Integer trainerId){
+        Trainee trainee = entityManager.find(Trainee.class, traineeId);
+        Trainer trainer = entityManager.find(Trainer.class, trainerId);
+        List<Trainer> trainers = trainee.getTrainers();
+        trainers.add(trainer);
+        entityManager.merge(trainee);
+    }
+
+    @Transactional
+    public void removeTrainerFromTrainee(Integer traineeId, Integer trainerId){
+        Trainee trainee = entityManager.find(Trainee.class, traineeId);
+        Trainer trainer = entityManager.find(Trainer.class, trainerId);
+        List<Trainer> trainers = trainee.getTrainers();
+        trainers.remove(trainer);
+        entityManager.merge(trainee);
     }
 }

@@ -1,5 +1,6 @@
 package epam.com.repository;
 
+import epam.com.entity.Trainee;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -8,6 +9,7 @@ import epam.com.entity.Trainer;
 import epam.com.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,10 +48,15 @@ public class TrainerRepository {
         }
     }
 
-    public void changePassword(User user, String password){
+    public void changePassword(Integer trainerId, String password){
         entityManager.getTransaction().begin();
-        user.setPassword(password);
-        entityManager.merge(user);
+        Query query = entityManager.createQuery("""
+                update User u set u.password = :password
+                where u.id in (select t.user.id from Trainer t where t.id = :trainerId)      
+                """);
+        query.setParameter("password", password);
+        query.setParameter("trainerId", trainerId);
+        query.executeUpdate();
         entityManager.getTransaction().commit();
     }
 
@@ -72,5 +79,18 @@ public class TrainerRepository {
                 " where u.id in (select t.user.id from Trainee t where t.id = :traineeId)");
         query.setParameter("traineeId", trainerId);
         entityManager.getTransaction().commit();
+    }
+
+    public List<Trainer> GetTrainersListThatNotAssignedOnTraineeByTraineeUsername(String traineeUsername){
+        String sql = "select te from Trainee te where te.user.userName = :traineeUsername";
+        TypedQuery<Trainee> query = entityManager.createQuery(sql, Trainee.class);
+        query.setParameter("traineeUsername", traineeUsername);
+        Trainee trainee = query.getSingleResult();
+        List<Trainer> assignedTrainers = trainee.getTrainers();  // assigned trainers
+        String sql2 = "select tr from Trainer tr";
+        TypedQuery<Trainer> query2 = entityManager.createQuery(sql2, Trainer.class);
+        List<Trainer> allTrainers = query2.getResultList();
+        allTrainers.removeAll(assignedTrainers);
+        return allTrainers;
     }
 }
