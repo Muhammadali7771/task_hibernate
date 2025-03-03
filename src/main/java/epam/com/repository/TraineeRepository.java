@@ -9,6 +9,7 @@ import epam.com.entity.Trainee;
 import epam.com.entity.User;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,21 +91,25 @@ public class TraineeRepository {
         query.setParameter("username", username);
         query.executeUpdate();
     }
-    @Transactional
-    public void assignTrainerForTrainee(Integer traineeId, Integer trainerId){
-        Trainee trainee = entityManager.find(Trainee.class, traineeId);
-        Trainer trainer = entityManager.find(Trainer.class, trainerId);
-        List<Trainer> trainers = trainee.getTrainers();
-        trainers.add(trainer);
-        entityManager.merge(trainee);
-    }
 
-    @Transactional
-    public void removeTrainerFromTrainee(Integer traineeId, Integer trainerId){
-        Trainee trainee = entityManager.find(Trainee.class, traineeId);
-        Trainer trainer = entityManager.find(Trainer.class, trainerId);
-        List<Trainer> trainers = trainee.getTrainers();
-        trainers.remove(trainer);
+    public void updateTraineeTrainerList(String traineeUsername, List<String> trainersUsernameList) {
+        Query query = entityManager.createQuery("""
+                select t from Trainee t left join User u on u.id = t.user.id
+                where u.userName = :traineeUsername  
+                """);
+        query.setParameter("traineeUsername", traineeUsername);
+        Trainee trainee = (Trainee) query.getSingleResult();
+        List<Trainer> trainers = new ArrayList<>();
+        for (int i = 0; i < trainersUsernameList.size(); i++) {
+            Query query2 = entityManager.createQuery("""
+                    select t from Trainer t left join User u on u.id = t.user.id
+                    where u.userName = :trainerUsername  
+                    """);
+            query2.setParameter("trainerUsername", trainersUsernameList.get(i));
+            Trainer trainer = (Trainer) query2.getSingleResult();
+            trainers.add(trainer);
+        }
+        trainee.setTrainers(trainers);
         entityManager.merge(trainee);
     }
 }
