@@ -20,15 +20,15 @@ public class TrainerRepository {
         this.entityManager = entityManager;
     }
 
-    public Integer save(Trainer trainer){
+    public Trainer save(Trainer trainer){
         entityManager.getTransaction().begin();
         entityManager.persist(trainer);
         entityManager.getTransaction().commit();
-        return trainer.getId();
+        return trainer;
     }
 
     public boolean checkUsernameAndPasswordMatch(String username, String password){
-        Query query = entityManager.createQuery("select t from Trainer t left join User u " +
+        Query query = entityManager.createQuery("select count(t) > 0 from Trainer t left join User u " +
                 " on t.user.id = u.id where u.userName = :username and u.password = :password");
         query.setParameter("username", username);
         query.setParameter("password", password);
@@ -48,38 +48,36 @@ public class TrainerRepository {
         }
     }
 
-    public void changePassword(Integer trainerId, String password){
+    public void changePassword(String username, String password){
         entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("""
                 update User u set u.password = :password
-                where u.id in (select t.user.id from Trainer t where t.id = :trainerId)      
+                where u.userName = :username    
                 """);
         query.setParameter("password", password);
-        query.setParameter("trainerId", trainerId);
+        query.setParameter("username", username);
         query.executeUpdate();
         entityManager.getTransaction().commit();
     }
 
     @Transactional
-    public void update(Trainer trainer){
+    public Trainer update(Trainer trainer){
         entityManager.merge(trainer);
+        return trainer;
     }
 
-    public void activate(Integer trainerId){
+    public void activateOrDeactivateTrainee(String username, boolean isActive) {
         entityManager.getTransaction().begin();
-        Query query = entityManager.createQuery("update User u set u.isActive = true " +
-                " where u.id in (select t.user.id from Trainee t where t.id = :traineeId)");
-        query.setParameter("traineeId", trainerId);
+        Query query = entityManager.createQuery("""
+                select u from User u left join Trainer t 
+                on u.id = t.user.id where u.userName = :username
+                """);
+        User user = (User) query.getSingleResult();
+        user.setActive(isActive);
+        entityManager.merge(user);
         entityManager.getTransaction().commit();
     }
 
-    public void deActivate(Integer trainerId){
-        entityManager.getTransaction().begin();
-        Query query = entityManager.createQuery("update User u set u.isActive = false " +
-                " where u.id in (select t.user.id from Trainee t where t.id = :traineeId)");
-        query.setParameter("traineeId", trainerId);
-        entityManager.getTransaction().commit();
-    }
 
     public List<Trainer> GetTrainersListThatNotAssignedOnTraineeByTraineeUsername(String traineeUsername){
         String sql = "select te from Trainee te where te.user.userName = :traineeUsername";
