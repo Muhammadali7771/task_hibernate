@@ -1,12 +1,12 @@
 package epam.com.repository;
 
+import epam.com.entity.Trainee;
 import epam.com.entity.Trainer;
+import epam.com.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import epam.com.entity.Trainee;
-import epam.com.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ public class TraineeRepository {
         this.entityManager = entityManager;
     }
 
-    public Integer save(Trainee trainee) {
+    public Trainee save(Trainee trainee) {
         entityManager.getTransaction().begin();
         entityManager.persist(trainee);
         entityManager.getTransaction().commit();
-        return trainee.getId();
+        return trainee;
     }
 
     public boolean checkUsernameAndPasswordMatch(String username, String password) {
@@ -49,38 +49,33 @@ public class TraineeRepository {
         }
     }
 
-    public void changePassword(Integer traineeId, String password) {
+    public void changePassword(String username, String newPassword) {
         entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("""
                 update User u set u.password = :password 
-                where u.id in (select t.user.id from Trainee t where t.id = :traineeId)
+                where u.userName = :username
                 """);
-        query.setParameter("password", password);
-        query.setParameter("traineeId", traineeId);
+        query.setParameter("password", newPassword);
+        query.setParameter("username", username);
         query.executeUpdate();
         entityManager.getTransaction().commit();
     }
 
     @Transactional
-    public void update(Trainee trainee) {
+    public Trainee update(Trainee trainee) {
         entityManager.merge(trainee);
+        return trainee;
     }
 
-    public void activate(Integer traineeId) {
+    public void activateOrDeactivateTrainee(String username, boolean isActive) {
         entityManager.getTransaction().begin();
-        Query query = entityManager.createQuery("update User u set u.isActive = true " +
-                " where u.id in (select t.user.id from Trainee t where t.id = :traineeId)");
-        query.setParameter("traineeId", traineeId);
-        query.executeUpdate();
-        entityManager.getTransaction().commit();
-    }
-
-    public void deActivate(Integer traineeId) {
-        entityManager.getTransaction().begin();
-        Query query = entityManager.createQuery("update User u set u.isActive = false " +
-                " where u.id in (select t.user.id from Trainee t where t.id = :traineeId)");
-        query.setParameter("traineeId", traineeId);
-        query.executeUpdate();
+        Query query = entityManager.createQuery("""
+                select u from User u left join Trainee t 
+                on u.id =t.user.id where u.userName = :username
+                """);
+        User user = (User) query.getSingleResult();
+        user.setActive(isActive);
+        entityManager.merge(user);
         entityManager.getTransaction().commit();
     }
 
