@@ -107,4 +107,9 @@ public class TraineeRepository {
         trainee.setTrainers(trainers);
         entityManager.merge(trainee);
     }
+
+    public Optional<Trainee> getTraineeById(Integer traineeId){
+        Trainee trainee = entityManager.find(Trainee.class, traineeId);
+        return trainee != null ? Optional.of(trainee) : Optional.empty();
+    }
 }

@@ -6,11 +6,9 @@ import epam.com.entity.TrainingType;
 
 import java.util.Date;
 
-public record TrainingCreateDto(Trainee trainee,
-                                Trainer trainer,
+public record TrainingCreateDto(String traineeUsername,
+                                String trainerUsername,
                                 String trainingName,
-                                TrainingType trainingType,
                                 Date trainingDate,
-                                Number duration,
-                                UserCreateDto dto) {
+                                Number duration) {
 }
