@@ -79,7 +79,7 @@ public class TrainerRepository {
     }
 
 
-    public List<Trainer> GetTrainersListThatNotAssignedOnTraineeByTraineeUsername(String traineeUsername){
+    public List<Trainer> getTrainersListThatNotAssignedOnTraineeByTraineeUsername(String traineeUsername){
         String sql = "select te from Trainee te where te.user.userName = :traineeUsername";
         TypedQuery<Trainee> query = entityManager.createQuery(sql, Trainee.class);
         query.setParameter("traineeUsername", traineeUsername);
@@ -90,5 +90,10 @@ public class TrainerRepository {
         List<Trainer> allTrainers = query2.getResultList();
         allTrainers.removeAll(assignedTrainers);
         return allTrainers;
+    }
+
+    public Optional<Trainer> getTrainerById(Integer id){
+        Trainer trainer = entityManager.find(Trainer.class, id);
+        return trainer != null ? Optional.of(trainer) : Optional.empty();
     }
 }

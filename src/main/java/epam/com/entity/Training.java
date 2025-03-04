@@ -3,8 +3,9 @@ package epam.com.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.JdbcTypeCode;
 
+import java.sql.Types;
 import java.util.Date;
 
 @Entity
@@ -30,5 +31,6 @@ public class Training {
     @Temporal(TemporalType.DATE)
     private Date trainingDate;
     @Column(nullable = false)
+    @JdbcTypeCode(Types.NUMERIC)
     private Number duration;
 }
