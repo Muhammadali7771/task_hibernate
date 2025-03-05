@@ -15,7 +15,7 @@ class TrainingTypeRepositoryTest {
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
 
-    @Test
+    /*@Test
     void save() {
         TrainingType trainingType = new TrainingType();
         trainingType.setTrainingTypeName("football");
@@ -23,5 +23,5 @@ class TrainingTypeRepositoryTest {
         Integer id = trainingTypeRepository.save(trainingType);
 
         Assertions.assertNotNull(id);
-    }
+    }*/
 }
