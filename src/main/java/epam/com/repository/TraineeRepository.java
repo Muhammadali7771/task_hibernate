@@ -29,8 +29,8 @@ public class TraineeRepository {
     }
 
     public boolean checkUsernameAndPasswordMatch(String username, String password) {
-        Query query = entityManager.createQuery("select count(t) > 0 from Trainer t left join User u " +
-                " where t.user.id = u.id and u.userName = :username and u.password = :password");
+        Query query = entityManager.createQuery("select count(t) > 0 from Trainee t left join User u " +
+                " on t.user.id = u.id where u.userName = :username and u.password = :password");
         query.setParameter("username", username);
         query.setParameter("password", password);
         boolean isMatch = (boolean) query.getSingleResult();
@@ -49,21 +49,26 @@ public class TraineeRepository {
         }
     }
 
+ //   @Transactional
     public void changePassword(String username, String newPassword) {
         entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("""
-                update User u set u.password = :password 
+                update User u set u.password = :password
                 where u.userName = :username
                 """);
         query.setParameter("password", newPassword);
         query.setParameter("username", username);
         query.executeUpdate();
+        entityManager.flush();
+        entityManager.clear();
         entityManager.getTransaction().commit();
     }
 
-    @Transactional
+   // @Transactional
     public Trainee update(Trainee trainee) {
+        entityManager.getTransaction().begin();
         entityManager.merge(trainee);
+        entityManager.getTransaction().commit();
         return trainee;
     }
 
@@ -73,24 +78,27 @@ public class TraineeRepository {
                 select u from User u left join Trainee t 
                 on u.id =t.user.id where u.userName = :username
                 """);
+        query.setParameter("username", username);
         User user = (User) query.getSingleResult();
         user.setActive(isActive);
         entityManager.merge(user);
         entityManager.getTransaction().commit();
     }
 
-    @Transactional
+    //@Transactional
     public void deleteByUsername(String username) {
+        entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("delete from Trainee t " +
                 " where t.user.id in (select u.id from User u where u.userName = :username)");
         query.setParameter("username", username);
         query.executeUpdate();
+        entityManager.getTransaction().commit();
     }
 
     public void updateTraineeTrainerList(String traineeUsername, List<String> trainersUsernameList) {
         Query query = entityManager.createQuery("""
                 select t from Trainee t left join User u on u.id = t.user.id
-                where u.userName = :traineeUsername  
+                where u.userName = :traineeUsername
                 """);
         query.setParameter("traineeUsername", traineeUsername);
         Trainee trainee = (Trainee) query.getSingleResult();
@@ -98,7 +106,7 @@ public class TraineeRepository {
         for (int i = 0; i < trainersUsernameList.size(); i++) {
             Query query2 = entityManager.createQuery("""
                     select t from Trainer t left join User u on u.id = t.user.id
-                    where u.userName = :trainerUsername  
+                    where u.userName = :trainerUsername
                     """);
             query2.setParameter("trainerUsername", trainersUsernameList.get(i));
             Trainer trainer = (Trainer) query2.getSingleResult();
