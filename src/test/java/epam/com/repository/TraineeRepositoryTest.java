@@ -41,6 +41,7 @@ class TraineeRepositoryTest {
         trainee.setUser(user);
         entityManager.getTransaction().begin();
         entityManager.createQuery("delete from Trainee").executeUpdate();
+        entityManager.createQuery("delete from Trainer").executeUpdate();
         entityManager.createQuery("delete from User").executeUpdate();
         entityManager.getTransaction().commit();
     }
