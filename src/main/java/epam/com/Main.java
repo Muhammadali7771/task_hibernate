@@ -2,7 +2,9 @@ package epam.com;
 
 import epam.com.config.AppConfig;
 import epam.com.entity.Trainer;
+import epam.com.entity.TrainingType;
 import epam.com.repository.TrainerRepository;
+import epam.com.repository.TrainingTypeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -17,12 +19,9 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
         TrainerRepository trainerRepository = context.getBean(TrainerRepository.class);
+        TrainingTypeRepository trainingTypeRepository = context.getBean(TrainingTypeRepository.class);
 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Optional<Trainer> trainerOptional = trainerRepository.getTrainerByUsername("John.Doe");
-        Trainer trainer = trainerOptional.get();
-        trainer.getUser().setPassword("00000");
-        trainerRepository.update(trainer);
     }
 }
