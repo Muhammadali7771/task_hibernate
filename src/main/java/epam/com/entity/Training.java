@@ -1,11 +1,11 @@
 package epam.com.entity;
 
+import epam.com.util.NumberType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 
-import java.sql.Types;
 import java.util.Date;
 
 @Entity
@@ -31,6 +31,6 @@ public class Training {
     @Temporal(TemporalType.DATE)
     private Date trainingDate;
     @Column(nullable = false)
-    @JdbcTypeCode(Types.NUMERIC)
+    @Type(value = NumberType.class)
     private Number duration;
 }

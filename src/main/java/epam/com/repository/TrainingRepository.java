@@ -18,11 +18,11 @@ public class TrainingRepository {
         this.entityManager = entityManager;
     }
 
-    public Integer save(Training training) {
+    public Training save(Training training) {
         entityManager.getTransaction().begin();
         entityManager.persist(training);
         entityManager.getTransaction().commit();
-        return training.getId();
+        return training;
     }
 
     public List<Training> getTraineeTrainingsListByTraineeUsernameAndCriteria(@NonNull String traineeUsername, Date fromDate, Date toDate, String trainerName, TrainingType trainingType) {

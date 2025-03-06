@@ -3,10 +3,12 @@ package epam.com.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
 @Entity
 @Getter
 @Setter
+@Immutable
 @Table(name = "training_types")
 public class TrainingType {
    @Id
