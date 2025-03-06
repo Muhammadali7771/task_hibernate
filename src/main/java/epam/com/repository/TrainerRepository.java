@@ -52,17 +52,20 @@ public class TrainerRepository {
         entityManager.getTransaction().begin();
         Query query = entityManager.createQuery("""
                 update User u set u.password = :password
-                where u.userName = :username    
+                where u.userName = :username
                 """);
         query.setParameter("password", password);
         query.setParameter("username", username);
         query.executeUpdate();
+        entityManager.clear();
         entityManager.getTransaction().commit();
     }
 
-    @Transactional
+    //@Transactional
     public Trainer update(Trainer trainer){
+        entityManager.getTransaction().begin();
         entityManager.merge(trainer);
+        entityManager.getTransaction().commit();
         return trainer;
     }
 
@@ -72,6 +75,7 @@ public class TrainerRepository {
                 select u from User u left join Trainer t 
                 on u.id = t.user.id where u.userName = :username
                 """);
+        query.setParameter("username", username);
         User user = (User) query.getSingleResult();
         user.setActive(isActive);
         entityManager.merge(user);

@@ -1,16 +1,14 @@
 package epam.com;
 
 import epam.com.config.AppConfig;
-import epam.com.entity.Trainee;
-import epam.com.entity.User;
-import epam.com.repository.TraineeRepository;
+import epam.com.entity.Trainer;
+import epam.com.repository.TrainerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Date;
 import java.util.Optional;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -18,10 +16,13 @@ import java.util.Optional;
 public class Main {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-        TraineeRepository traineeRepository = context.getBean(TraineeRepository.class);
+        TrainerRepository trainerRepository = context.getBean(TrainerRepository.class);
 
         EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("default");
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-
+        Optional<Trainer> trainerOptional = trainerRepository.getTrainerByUsername("John.Doe");
+        Trainer trainer = trainerOptional.get();
+        trainer.getUser().setPassword("00000");
+        trainerRepository.update(trainer);
     }
 }

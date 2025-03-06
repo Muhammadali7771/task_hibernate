@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import epam.com.entity.TrainingType;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class TrainingTypeRepository {
     private final EntityManager entityManager;
@@ -12,10 +14,8 @@ public class TrainingTypeRepository {
         this.entityManager = entityManager;
     }
 
-    public Integer save(TrainingType trainingType){
-        entityManager.getTransaction().begin();
-        entityManager.persist(trainingType);
-        entityManager.getTransaction().commit();
-        return trainingType.getId();
+    public Optional<TrainingType> getTrainingTypeById(Integer id){
+        TrainingType trainingType = entityManager.find(TrainingType.class, id);
+        return trainingType != null ? Optional.of(trainingType) : Optional.empty();
     }
 }

@@ -9,19 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {AppConfig.class})
 class TrainingTypeRepositoryTest {
     @Autowired
     private TrainingTypeRepository trainingTypeRepository;
 
-    /*@Test
-    void save() {
-        TrainingType trainingType = new TrainingType();
-        trainingType.setTrainingTypeName("football");
-
-        Integer id = trainingTypeRepository.save(trainingType);
-
-        Assertions.assertNotNull(id);
-    }*/
+    @Test
+    void getTrainingTypeById() {
+        Optional<TrainingType> trainingTypeOptional = trainingTypeRepository.getTrainingTypeById(1);
+        Assertions.assertTrue(trainingTypeOptional.isPresent());
+    }
 }
