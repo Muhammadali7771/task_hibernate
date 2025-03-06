@@ -38,7 +38,7 @@ public class TraineeRepository {
         query.setParameter("username", username);
         query.setParameter("password", password);
         boolean isMatch = (boolean) query.getSingleResult();
-        log.debug("Username and password match result: {}", isMatch);
+        log.info("Username and password match result: {}", isMatch);
         return isMatch;
     }
 
